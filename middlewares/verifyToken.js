@@ -1,22 +1,23 @@
+// server/middlewares/verifyToken.js
 const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
-    // Check if the authorization header exists
-    if (!req.headers.authorization) {
-        return res.status(401).send({ message: 'unauthorized access' });
-    }
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).send({ message: 'Unauthorized access' });
 
-    // Extract the token (format: "Bearer <token>")
-    const token = req.headers.authorization.split(' ')[1];
+    const token = authHeader.split(' ')[1];
+    if (!token) return res.status(401).send({ message: 'Unauthorized access' });
 
-    // Verify the token using your secret key
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(401).send({ message: 'unauthorized access' });
-        }
-        req.user = decoded; // Add the decoded user info to the request object
-        next(); // Proceed to the next middleware or route handler
+      if (err) return res.status(401).send({ message: 'Unauthorized access' });
+      // decoded should contain at least { email: '...' }
+      req.user = decoded;
+      next();
     });
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = verifyToken;

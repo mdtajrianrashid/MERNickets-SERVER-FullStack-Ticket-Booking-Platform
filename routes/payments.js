@@ -1,45 +1,66 @@
+// server/routes/payments.js
 const express = require('express');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Booking = require('../models/Booking');
 const Ticket = require('../models/Ticket');
+const User = require('../models/User');
 const verifyToken = require('../middlewares/verifyToken');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const router = express.Router();
 
-router.post('/create-payment-intent', verifyToken, async (req, res) => {
+// POST /payments/create-payment-intent
+router.post('/create-payment-intent', verifyToken, async (req, res, next) => {
+  try {
     const { price } = req.body;
-    const amount = parseInt(price * 100); // Stripe uses cents
-
+    if (typeof price !== 'number' || price <= 0) return res.status(400).send({ message: 'Invalid price' });
+    const amount = Math.round(price * 100);
     const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
-        currency: 'usd',
-        payment_method_types: ['card']
+      amount,
+      currency: 'usd',
+      payment_method_types: ['card']
     });
-
-    res.send({
-        clientSecret: paymentIntent.client_secret
-    });
+    res.send({ clientSecret: paymentIntent.client_secret });
+  } catch (err) { next(err); }
 });
 
-// After successful payment on Client, call this to update Status & Reduce Seat
-router.patch('/confirm/:id', verifyToken, async (req, res) => {
-    const id = req.params.id;
-    const { transactionId, ticketId, quantity } = req.body;
+// PATCH /payments/confirm/:id - confirm booking payment, atomic-ish updates
+router.patch('/confirm/:id', verifyToken, async (req, res, next) => {
+  try {
+    const bookingId = req.params.id;
+    const { transactionId } = req.body;
+    if (!transactionId) return res.status(400).send({ message: 'transactionId required' });
 
-    // 1. Update Booking Status to 'paid'
-    const updateBooking = await Booking.findByIdAndUpdate(id, {
-        $set: { 
-            bookingStatus: 'paid',
-            transactionId: transactionId,
-            paymentDate: new Date()
-        }
-    });
+    const booking = await Booking.findById(bookingId);
+    if (!booking) return res.status(404).send({ message: 'Booking not found' });
 
-    // 2. Reduce Ticket Quantity [cite: 405]
-    const updateTicket = await Ticket.findByIdAndUpdate(ticketId, {
-        $inc: { quantity: -quantity }
-    });
+    // Only the user who made the booking can confirm payment
+    if (booking.userEmail !== req.user.email) return res.status(403).send({ message: 'forbidden access' });
 
-    res.send({ updateBooking, updateTicket });
+    const ticket = await Ticket.findById(booking.ticketId);
+    if (!ticket) return res.status(404).send({ message: 'Ticket not found' });
+
+    // Prevent payment after departure
+    if (new Date(ticket.departureTime) <= new Date()) {
+      return res.status(400).send({ message: 'Cannot pay after departure time' });
+    }
+
+    // Ensure enough seats remain
+    if (ticket.quantity < booking.quantity) {
+      return res.status(400).send({ message: 'Not enough seats available' });
+    }
+
+    // Update booking status & transaction info
+    booking.bookingStatus = 'paid';
+    booking.transactionId = transactionId;
+    booking.paymentDate = new Date();
+    await booking.save();
+
+    // Decrement ticket quantity
+    ticket.quantity = ticket.quantity - booking.quantity;
+    if (ticket.quantity < 0) ticket.quantity = 0;
+    await ticket.save();
+
+    res.send({ booking, ticket });
+  } catch (err) { next(err); }
 });
 
 module.exports = router;

@@ -1,3 +1,4 @@
+// server/index.js
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -6,47 +7,50 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// CORS - allow origins via env or sensible defaults
+const allowedOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173').split(',');
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
 app.use(express.json());
 
-// Import Routes (These match the files in your /routes folder)
+// Routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const ticketRoutes = require('./routes/tickets');
 const bookingRoutes = require('./routes/bookings');
 const paymentRoutes = require('./routes/payments');
 
-// Connect to MongoDB using Mongoose (Requirement #18)
-// This enables your Models (User.js, Ticket.js) to work
-mongoose.connect(process.env.DB_URI)
-    .then(() => {
-        console.log("✅ MongoDB Connected Successfully via Mongoose");
-    })
-    .catch(err => {
-        console.error("❌ MongoDB Connection Error:", err);
-    });
+// Connect to MongoDB
+mongoose.connect(process.env.DB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => console.log('✅ MongoDB Connected Successfully via Mongoose'))
+  .catch(err => {
+    console.error('❌ MongoDB Connection Error:', err);
+    process.exit(1);
+  });
 
-// Use Routes
-// When a user visits /auth/jwt, it goes to auth.js
+// Use routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/tickets', ticketRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/payments', paymentRoutes);
 
-// Root Route (To check if server is running)
-app.get('/', (req, res) => {
-    res.send('Ticket Booking Server is Running');
-});
+// Root health-check
+app.get('/', (req, res) => res.send('Ticket Booking Server is Running'));
 
-// Global Error Handler (Optional but good for debugging)
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+  console.error(err);
+  const status = err.status || 500;
+  res.status(status).send({ message: err.message || 'Internal Server Error' });
 });
 
-// Start the server
 app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`);
+  console.log(`Server listening on port ${port}`);
 });
