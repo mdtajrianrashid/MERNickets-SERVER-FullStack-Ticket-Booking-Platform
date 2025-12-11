@@ -23,14 +23,15 @@ const ticketRoutes = require('./routes/tickets');
 const bookingRoutes = require('./routes/bookings');
 const paymentRoutes = require('./routes/payments');
 
-// Connect to MongoDB
-mongoose.connect(process.env.DB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-  .then(() => console.log('✅ MongoDB Connected Successfully via Mongoose'))
-  .catch(err => {
-    console.error('❌ MongoDB Connection Error:', err);
+// ---------------------------------------------
+// ✔ FIXED: Mongoose v7/v8 correct connection
+// ---------------------------------------------
+mongoose.connect(process.env.DB_URI)
+  .then(() => {
+    console.log("✅ MongoDB Connected Successfully via Mongoose");
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB Connection Error:", err);
     process.exit(1);
   });
 

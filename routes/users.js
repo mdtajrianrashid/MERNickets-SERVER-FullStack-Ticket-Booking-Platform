@@ -1,4 +1,3 @@
-// server/routes/users.js
 const express = require('express');
 const User = require('../models/User');
 const Ticket = require('../models/Ticket');
@@ -8,12 +7,16 @@ const router = express.Router();
 // Helper: ensure requester is admin
 async function ensureAdmin(req, res) {
   const requesterEmail = req.user?.email;
-  if (!requesterEmail) return res.status(401).send({ message: 'Unauthorized' });
+  if (!requesterEmail) {
+    res.status(401).send({ message: 'Unauthorized' });
+    return true;
+  }
   const requester = await User.findOne({ email: requesterEmail });
   if (!requester || requester.role !== 'admin') {
-    return res.status(403).send({ message: 'forbidden access' });
+    res.status(403).send({ message: 'forbidden access' });
+    return true;
   }
-  return null;
+  return false;
 }
 
 // GET /users - Admin only
@@ -30,15 +33,22 @@ router.get('/', verifyToken, async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const user = req.body;
+    console.log("POST /users body:", user);
+
     if (!user?.email) return res.status(400).send({ message: 'Email is required' });
 
     const result = await User.findOneAndUpdate(
       { email: user.email },
       { $set: { name: user.name || 'No Name', photo: user.photo || '', role: user.role || 'user' } },
-      { upsert: true, new: true }
+      { upsert: true, new: true, setDefaultsOnInsert: true }
     );
-    res.send(result);
-  } catch (err) { next(err); }
+
+    // respond with 201 on creation / upsert
+    res.status(201).send(result);
+  } catch (err) {
+    console.error("Error in POST /users:", err);
+    next(err);
+  }
 });
 
 // PATCH /users/admin/:id - make Admin / Vendor (Admin only)

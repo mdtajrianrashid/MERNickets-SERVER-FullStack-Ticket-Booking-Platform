@@ -183,4 +183,10 @@ router.patch('/advertise/:id', verifyToken, async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+// TEMP DEBUG ROUTE
+router.get('/all', async (req, res) => {
+  const data = await Ticket.find();
+  res.send(data);
+});
+
 module.exports = router;
