@@ -1,78 +1,72 @@
 import Ticket from "../models/Ticket.js";
+import User from "../models/User.js";
 
-// Create ticket (Vendor Only)
+/* ---------- CREATE (Vendor) ---------- */
 export const createTicket = async (req, res) => {
-  const data = req.body;
-  data.vendorEmail = req.decoded.email;
+  const vendor = await User.findOne({ email: req.decoded.email });
 
-  const ticket = await Ticket.create(data);
+  if (vendor.isFraud) {
+    return res.status(403).json({ message: "Fraud vendors cannot add tickets" });
+  }
+
+  const ticket = await Ticket.create({
+    ...req.body,
+    vendorEmail: req.decoded.email,
+    vendorFraud: vendor.isFraud,
+  });
+
   res.send(ticket);
 };
 
-// Get ALL approved tickets
+/* ---------- PUBLIC ---------- */
 export const getApprovedTickets = async (req, res) => {
-  const tickets = await Ticket.find({ status: "approved" });
-  res.send(tickets);
-};
-
-// Vendor gets own tickets
-export const vendorTickets = async (req, res) => {
-  const tickets = await Ticket.find({ vendorEmail: req.decoded.email });
-  res.send(tickets);
-};
-
-// Admin: Approve
-export const approveTicket = async (req, res) => {
-  const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
+  const tickets = await Ticket.find({
     status: "approved",
+    vendorFraud: false,
   });
+  res.send(tickets);
+};
+
+/* ---------- ADMIN ---------- */
+export const getAllTicketsAdmin = async (req, res) => {
+  const tickets = await Ticket.find();
+  res.send(tickets);
+};
+
+export const approveTicket = async (req, res) => {
+  const ticket = await Ticket.findByIdAndUpdate(
+    req.params.id,
+    { status: "approved" },
+    { new: true }
+  );
   res.send(ticket);
 };
 
-// Admin: Reject
 export const rejectTicket = async (req, res) => {
-  const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
-    status: "rejected",
-  });
+  const ticket = await Ticket.findByIdAndUpdate(
+    req.params.id,
+    { status: "rejected", advertised: false },
+    { new: true }
+  );
   res.send(ticket);
 };
 
-// Admin: Advertise (max 6)
-export const advertiseTicket = async (req, res) => {
-  const count = await Ticket.countDocuments({ advertised: true });
+export const toggleAdvertise = async (req, res) => {
+  const ticket = await Ticket.findById(req.params.id);
 
-  if (count >= 6)
-    return res.status(400).json({ message: "Max 6 advertised tickets allowed" });
+  if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
-  const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
-    advertised: true,
-  });
+  if (!ticket.advertised) {
+    const count = await Ticket.countDocuments({ advertised: true });
+    if (count >= 6) {
+      return res
+        .status(400)
+        .json({ message: "Max 6 advertised tickets allowed" });
+    }
+  }
+
+  ticket.advertised = !ticket.advertised;
+  await ticket.save();
 
   res.send(ticket);
-};
-
-// Vendor: Update ticket
-export const updateTicket = async (req, res) => {
-  const ticket = await Ticket.findById(req.params.id);
-
-  if (ticket.vendorEmail !== req.decoded.email)
-    return res.status(403).json({ message: "Not your ticket!" });
-
-  const updated = await Ticket.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-
-  res.send(updated);
-};
-
-// Vendor: Delete ticket
-export const deleteTicket = async (req, res) => {
-  const ticket = await Ticket.findById(req.params.id);
-
-  if (ticket.vendorEmail !== req.decoded.email)
-    return res.status(403).json({ message: "Not your ticket!" });
-
-  await Ticket.findByIdAndDelete(req.params.id);
-
-  res.send({ message: "Ticket deleted" });
 };

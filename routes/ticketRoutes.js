@@ -4,27 +4,24 @@ import { verifyAdmin, verifyVendor } from "../middleware/verifyRoles.js";
 import {
   createTicket,
   getApprovedTickets,
-  vendorTickets,
+  getAllTicketsAdmin,
   approveTicket,
   rejectTicket,
-  advertiseTicket,
-  updateTicket,
-  deleteTicket,
+  toggleAdvertise,
 } from "../controllers/ticketController.js";
 
 const router = express.Router();
 
+/* PUBLIC */
 router.get("/", getApprovedTickets);
 
-router.get("/vendor", verifyToken, verifyVendor, vendorTickets);
-
-router.post("/", verifyToken, verifyVendor, createTicket);
-
+/* ADMIN */
+router.get("/admin", verifyToken, verifyAdmin, getAllTicketsAdmin);
 router.patch("/approve/:id", verifyToken, verifyAdmin, approveTicket);
 router.patch("/reject/:id", verifyToken, verifyAdmin, rejectTicket);
-router.patch("/advertise/:id", verifyToken, verifyAdmin, advertiseTicket);
+router.patch("/advertise/:id", verifyToken, verifyAdmin, toggleAdvertise);
 
-router.patch("/:id", verifyToken, verifyVendor, updateTicket);
-router.delete("/:id", verifyToken, verifyVendor, deleteTicket);
+/* VENDOR */
+router.post("/", verifyToken, verifyVendor, createTicket);
 
 export default router;
