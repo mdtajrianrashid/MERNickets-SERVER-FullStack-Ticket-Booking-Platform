@@ -6,9 +6,12 @@ import {
   getApprovedTickets,
   getAllTicketsAdmin,
   getVendorTickets,
+  getSingleVendorTicket,
   approveTicket,
   rejectTicket,
   toggleAdvertise,
+  updateTicket,
+  deleteTicket,
 } from "../controllers/ticketController.js";
 
 const router = express.Router();
@@ -22,5 +25,8 @@ router.patch("/advertise/:id", verifyToken, verifyAdmin, toggleAdvertise);
 
 router.post("/", verifyToken, verifyVendor, createTicket);
 router.get("/vendor", verifyToken, verifyVendor, getVendorTickets);
+router.get("/vendor/:id", verifyToken, verifyVendor, getSingleVendorTicket);
+router.patch("/:id", verifyToken, verifyVendor, updateTicket);
+router.delete("/:id", verifyToken, verifyVendor, deleteTicket);
 
 export default router;
