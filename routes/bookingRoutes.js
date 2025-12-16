@@ -1,10 +1,11 @@
-// server/routes/bookingRoutes.js
 import express from "express";
 import verifyToken from "../middleware/verifyToken.js";
 import {
   verifyUser,
   verifyVendor,
 } from "../middleware/verifyRoles.js";
+
+import Booking from "../models/Booking.js";
 
 import {
   createBooking,
@@ -36,6 +37,23 @@ router.get("/transactions", verifyToken, verifyUser, getTransactionHistory);
 /* ===============================
    VENDOR ROUTES
 ================================ */
+
+// 🔹 Vendor: get booking requests for own tickets
+router.get(
+  "/vendor",
+  verifyToken,
+  verifyVendor,
+  async (req, res) => {
+    const bookings = await Booking.find()
+      .populate("ticketId");
+
+    const vendorBookings = bookings.filter(
+      b => b.ticketId?.vendorEmail === req.decoded.email
+    );
+
+    res.send(vendorBookings);
+  }
+);
 
 // Accept booking request
 router.patch("/accept/:id", verifyToken, verifyVendor, acceptBooking);

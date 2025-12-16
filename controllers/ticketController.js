@@ -70,3 +70,11 @@ export const toggleAdvertise = async (req, res) => {
 
   res.send(ticket);
 };
+
+/* ---------- VENDOR ---------- */
+export const getVendorTickets = async (req, res) => {
+  const tickets = await Ticket.find({
+    vendorEmail: req.decoded.email,
+  });
+  res.send(tickets);
+};

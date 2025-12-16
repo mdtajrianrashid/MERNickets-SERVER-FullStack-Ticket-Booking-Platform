@@ -5,6 +5,7 @@ import {
   createTicket,
   getApprovedTickets,
   getAllTicketsAdmin,
+  getVendorTickets,
   approveTicket,
   rejectTicket,
   toggleAdvertise,
@@ -12,16 +13,14 @@ import {
 
 const router = express.Router();
 
-/* PUBLIC */
 router.get("/", getApprovedTickets);
 
-/* ADMIN */
 router.get("/admin", verifyToken, verifyAdmin, getAllTicketsAdmin);
 router.patch("/approve/:id", verifyToken, verifyAdmin, approveTicket);
 router.patch("/reject/:id", verifyToken, verifyAdmin, rejectTicket);
 router.patch("/advertise/:id", verifyToken, verifyAdmin, toggleAdvertise);
 
-/* VENDOR */
 router.post("/", verifyToken, verifyVendor, createTicket);
+router.get("/vendor", verifyToken, verifyVendor, getVendorTickets);
 
 export default router;
