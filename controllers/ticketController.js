@@ -4,19 +4,45 @@ import User from "../models/User.js";
 /* ---------- CREATE ---------- */
 export const createTicket = async (req, res) => {
   const vendor = await User.findOne({ email: req.decoded.email });
-
   if (vendor.isFraud) {
     return res.status(403).json({ message: "Fraud vendors cannot add tickets" });
   }
 
   const ticket = await Ticket.create({
-    ...req.body,
+    title: req.body.title,
+    from: req.body.from,
+    to: req.body.to,
+    transportType: req.body.transportType,
+    price: Number(req.body.price),
+    ticketQuantity: Number(req.body.ticketQuantity),
+    departure: new Date(req.body.departure),
+    image: req.body.image,
+
     vendorEmail: req.decoded.email,
     vendorFraud: vendor.isFraud,
   });
 
   res.send(ticket);
 };
+
+/* ---------- DELETE ---------- */
+export const deleteTicket = async (req, res) => {
+  try {
+    const ticket = await Ticket.findOneAndDelete({
+      _id: req.params.id,
+      vendorEmail: req.decoded.email,
+    });
+
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+
+    res.send({ message: "Ticket deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 /* ---------- PUBLIC ---------- */
 export const getApprovedTickets = async (req, res) => {
@@ -53,7 +79,6 @@ export const rejectTicket = async (req, res) => {
 
 export const toggleAdvertise = async (req, res) => {
   const ticket = await Ticket.findById(req.params.id);
-
   if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
   if (!ticket.advertised) {
@@ -65,7 +90,6 @@ export const toggleAdvertise = async (req, res) => {
 
   ticket.advertised = !ticket.advertised;
   await ticket.save();
-
   res.send(ticket);
 };
 
@@ -73,16 +97,6 @@ export const toggleAdvertise = async (req, res) => {
 export const getVendorTickets = async (req, res) => {
   const tickets = await Ticket.find({ vendorEmail: req.decoded.email });
   res.send(tickets);
-};
-
-export const getSingleVendorTicket = async (req, res) => {
-  const ticket = await Ticket.findOne({
-    _id: req.params.id,
-    vendorEmail: req.decoded.email,
-  });
-
-  if (!ticket) return res.status(404).json({ message: "Ticket not found" });
-  res.send(ticket);
 };
 
 export const updateTicket = async (req, res) => {
@@ -96,19 +110,32 @@ export const updateTicket = async (req, res) => {
     return res.status(403).json({ message: "Rejected tickets cannot be edited" });
   }
 
-  Object.assign(ticket, req.body);
-  ticket.status = "pending";
-  await ticket.save();
+  Object.assign(ticket, {
+    ...req.body,
+    ticketQuantity: Number(req.body.ticketQuantity),
+    price: Number(req.body.price),
+    departure: new Date(req.body.departure),
+    status: "pending",
+  });
 
+  await ticket.save();
   res.send(ticket);
 };
 
-export const deleteTicket = async (req, res) => {
-  const ticket = await Ticket.findOneAndDelete({
-    _id: req.params.id,
-    vendorEmail: req.decoded.email,
-  });
+/* ---------- VENDOR: GET SINGLE TICKET ---------- */
+export const getSingleVendorTicket = async (req, res) => {
+  try {
+    const ticket = await Ticket.findOne({
+      _id: req.params.id,
+      vendorEmail: req.decoded.email,
+    });
 
-  if (!ticket) return res.status(404).json({ message: "Ticket not found" });
-  res.send({ message: "Ticket deleted successfully" });
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+
+    res.send(ticket);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };

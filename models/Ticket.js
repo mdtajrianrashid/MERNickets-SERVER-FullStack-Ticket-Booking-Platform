@@ -2,12 +2,18 @@ import mongoose from "mongoose";
 
 const ticketSchema = new mongoose.Schema(
   {
-    title: String,
+    title: { type: String, required: true },
     description: String,
-    price: Number,
-    from: String,
-    to: String,
-    transportType: String,
+
+    from: { type: String, required: true },
+    to: { type: String, required: true },
+    transportType: { type: String, required: true },
+
+    price: { type: Number, required: true },
+    ticketQuantity: { type: Number, required: true },
+
+    departure: { type: Date, required: true },
+
     image: String,
 
     vendorEmail: String,

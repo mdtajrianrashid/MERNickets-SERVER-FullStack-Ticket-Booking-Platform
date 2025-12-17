@@ -5,11 +5,11 @@ import {
   createTicket,
   getApprovedTickets,
   getAllTicketsAdmin,
-  getVendorTickets,
-  getSingleVendorTicket,
   approveTicket,
   rejectTicket,
   toggleAdvertise,
+  getVendorTickets,
+  getSingleVendorTicket,
   updateTicket,
   deleteTicket,
 } from "../controllers/ticketController.js";
