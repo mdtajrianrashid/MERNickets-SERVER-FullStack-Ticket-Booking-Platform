@@ -5,8 +5,6 @@ import {
   verifyVendor,
 } from "../middleware/verifyRoles.js";
 
-import Booking from "../models/Booking.js";
-
 import {
   createBooking,
   getUserBookings,
@@ -14,6 +12,8 @@ import {
   rejectBooking,
   confirmBookingPayment,
   getTransactionHistory,
+  getVendorRequestedBookings,
+  getVendorRevenue,
 } from "../controllers/bookingController.js";
 
 const router = express.Router();
@@ -22,43 +22,33 @@ const router = express.Router();
    USER ROUTES
 ================================ */
 
-// Create booking
 router.post("/", verifyToken, verifyUser, createBooking);
-
-// Get my bookings
 router.get("/", verifyToken, verifyUser, getUserBookings);
-
-// Confirm Stripe payment
 router.patch("/confirm", verifyToken, verifyUser, confirmBookingPayment);
-
-// Transaction history
 router.get("/transactions", verifyToken, verifyUser, getTransactionHistory);
 
 /* ===============================
    VENDOR ROUTES
 ================================ */
 
-// 🔹 Vendor: get booking requests for own tickets
+// ✅ ONLY pending booking requests
 router.get(
   "/vendor",
   verifyToken,
   verifyVendor,
-  async (req, res) => {
-    const bookings = await Booking.find()
-      .populate("ticketId");
-
-    const vendorBookings = bookings.filter(
-      b => b.ticketId?.vendorEmail === req.decoded.email
-    );
-
-    res.send(vendorBookings);
-  }
+  getVendorRequestedBookings
 );
 
-// Accept booking request
+// Accept / Reject
 router.patch("/accept/:id", verifyToken, verifyVendor, acceptBooking);
-
-// Reject booking request
 router.patch("/reject/:id", verifyToken, verifyVendor, rejectBooking);
+
+// ✅ Vendor revenue
+router.get(
+  "/vendor/revenue",
+  verifyToken,
+  verifyVendor,
+  getVendorRevenue
+);
 
 export default router;
