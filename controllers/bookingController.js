@@ -144,6 +144,9 @@ export const getVendorRequestedBookings = async (req, res) => {
 ================================ */
 export const getVendorRevenue = async (req, res) => {
   try {
+    /* ==========================
+       1️⃣ PAID BOOKINGS (Revenue + Sold)
+    =========================== */
     const bookings = await Booking.find({ status: "paid" })
       .populate("ticketId");
 
@@ -156,14 +159,32 @@ export const getVendorRevenue = async (req, res) => {
       0
     );
 
+    const ticketsSold = vendorPaid.reduce(
+      (sum, b) => sum + b.quantity,
+      0
+    );
+
+    /* ==========================
+       2️⃣ TICKETS ADDED (From Ticket Collection)
+    =========================== */
+    const ticketsAdded = await Ticket.countDocuments({
+      vendorEmail: req.decoded.email,
+    });
+
+    /* ==========================
+       3️⃣ SEND FINAL RESPONSE
+    =========================== */
     res.send({
       revenue,
-      ticketsSold: vendorPaid.length,
+      ticketsSold,
+      ticketsAdded,
     });
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 
 /* ================================

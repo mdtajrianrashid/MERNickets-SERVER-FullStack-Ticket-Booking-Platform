@@ -16,10 +16,17 @@ const ticketSchema = new mongoose.Schema(
 
     image: String,
 
+    // ✅ 7 Perks (max 7)
+    perks: {
+      type: [String],
+      validate: [arr => arr.length <= 7, "Max 7 perks allowed"],
+      default: [],
+    },
+
     vendorEmail: String,
     vendorFraud: { type: Boolean, default: false },
 
-    status: { type: String, default: "pending" }, // pending, approved, rejected
+    status: { type: String, default: "pending" },
     advertised: { type: Boolean, default: false },
   },
   { timestamps: true }

@@ -18,6 +18,9 @@ export const createTicket = async (req, res) => {
     departure: new Date(req.body.departure),
     image: req.body.image,
 
+    // ✅ Perks
+    perks: req.body.perks || [],
+
     vendorEmail: req.decoded.email,
     vendorFraud: vendor.isFraud,
   });
@@ -27,22 +30,17 @@ export const createTicket = async (req, res) => {
 
 /* ---------- DELETE ---------- */
 export const deleteTicket = async (req, res) => {
-  try {
-    const ticket = await Ticket.findOneAndDelete({
-      _id: req.params.id,
-      vendorEmail: req.decoded.email,
-    });
+  const ticket = await Ticket.findOneAndDelete({
+    _id: req.params.id,
+    vendorEmail: req.decoded.email,
+  });
 
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
-
-    res.send({ message: "Ticket deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  if (!ticket) {
+    return res.status(404).json({ message: "Ticket not found" });
   }
-};
 
+  res.send({ message: "Ticket deleted successfully" });
+};
 
 /* ---------- PUBLIC ---------- */
 export const getApprovedTickets = async (req, res) => {
@@ -112,6 +110,7 @@ export const updateTicket = async (req, res) => {
 
   Object.assign(ticket, {
     ...req.body,
+    perks: req.body.perks || [],
     ticketQuantity: Number(req.body.ticketQuantity),
     price: Number(req.body.price),
     departure: new Date(req.body.departure),
@@ -122,20 +121,16 @@ export const updateTicket = async (req, res) => {
   res.send(ticket);
 };
 
-/* ---------- VENDOR: GET SINGLE TICKET ---------- */
+/* ---------- VENDOR: SINGLE ---------- */
 export const getSingleVendorTicket = async (req, res) => {
-  try {
-    const ticket = await Ticket.findOne({
-      _id: req.params.id,
-      vendorEmail: req.decoded.email,
-    });
+  const ticket = await Ticket.findOne({
+    _id: req.params.id,
+    vendorEmail: req.decoded.email,
+  });
 
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
-
-    res.send(ticket);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  if (!ticket) {
+    return res.status(404).json({ message: "Ticket not found" });
   }
+
+  res.send(ticket);
 };
