@@ -10,7 +10,13 @@ import ticketRoutes from "./routes/ticketRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://mernickets.netlify.app/"
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // Connect DB
