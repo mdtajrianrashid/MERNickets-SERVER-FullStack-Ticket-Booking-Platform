@@ -31,7 +31,7 @@ router.get("/transactions", verifyToken, verifyUser, getTransactionHistory);
    VENDOR ROUTES
 ================================ */
 
-// ✅ ONLY pending booking requests
+// ONLY pending booking requests
 router.get(
   "/vendor",
   verifyToken,

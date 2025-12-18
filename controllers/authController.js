@@ -1,4 +1,3 @@
-// server/controllers/authController.js
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Ticket from "../models/Ticket.js";
@@ -14,7 +13,7 @@ export const registerUser = async (req, res) => {
   if (!user) {
     user = await User.create({
       email,
-      name, // ✅ Name is REQUIRED and trusted from frontend
+      name,
     });
   }
 

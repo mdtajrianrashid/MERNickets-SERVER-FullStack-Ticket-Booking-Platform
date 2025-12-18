@@ -36,7 +36,7 @@ export const createBooking = async (req, res) => {
         .json({ message: "You already booked this ticket" });
     }
 
-    // ✅ CALCULATE TOTAL PRICE HERE
+    // CALCULATE TOTAL PRICE HERE
     const totalPrice = ticket.price * quantity;
 
     const booking = await Booking.create({
@@ -144,9 +144,6 @@ export const getVendorRequestedBookings = async (req, res) => {
 ================================ */
 export const getVendorRevenue = async (req, res) => {
   try {
-    /* ==========================
-       1️⃣ PAID BOOKINGS (Revenue + Sold)
-    =========================== */
     const bookings = await Booking.find({ status: "paid" })
       .populate("ticketId");
 
@@ -185,8 +182,6 @@ export const getVendorRevenue = async (req, res) => {
   }
 };
 
-
-
 /* ================================
    Confirm Payment (Stripe)
 ================================ */
@@ -219,7 +214,7 @@ export const confirmBookingPayment = async (req, res) => {
         .json({ message: "Not enough tickets available" });
     }
 
-    // ✅ RECONFIRM TOTAL PRICE (SECURITY)
+    // RECONFIRM TOTAL PRICE (SECURITY)
     booking.totalPrice = booking.ticketId.price * booking.quantity;
 
     // Reduce ticket quantity

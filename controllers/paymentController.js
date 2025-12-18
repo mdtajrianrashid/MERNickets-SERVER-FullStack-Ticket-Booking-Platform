@@ -1,23 +1,21 @@
-// server/controllers/paymentController.js
-
-// 1️⃣ Load environment variables at the very top
+// Load environment variables at the very top
 import dotenv from "dotenv";
 dotenv.config();
 
 import Stripe from "stripe";
 import Booking from "../models/Booking.js";
 
-// 2️⃣ Safety check for STRIPE_SECRET_KEY
+// Safety check for STRIPE_SECRET_KEY
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error("STRIPE_SECRET_KEY is not defined in environment variables");
 }
 
-// 3️⃣ Initialize Stripe with your secret key
+// Initialize Stripe with your secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2023-08-16",
 });
 
-// 4️⃣ Payment Intent creation function
+// Payment Intent creation function
 export const createPaymentIntent = async (req, res) => {
   try {
     const { bookingId } = req.body;
@@ -55,7 +53,7 @@ export const createPaymentIntent = async (req, res) => {
     const unitPrice = booking.ticketId.price;
     const quantity = booking.quantity;
     const totalAmount = unitPrice * quantity;
-    const amountCents = Math.round(totalAmount * 100); // Stripe expects cents
+    const amountCents = Math.round(totalAmount * 100);
 
     // Create Stripe payment intent
     const paymentIntent = await stripe.paymentIntents.create({

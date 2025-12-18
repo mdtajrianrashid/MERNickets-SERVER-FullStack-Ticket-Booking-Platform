@@ -16,7 +16,6 @@ const ticketSchema = new mongoose.Schema(
 
     image: String,
 
-    // ✅ 7 Perks (max 7)
     perks: {
       type: [String],
       validate: [arr => arr.length <= 7, "Max 7 perks allowed"],

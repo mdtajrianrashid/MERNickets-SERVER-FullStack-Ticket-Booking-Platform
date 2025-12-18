@@ -18,7 +18,7 @@ export const createTicket = async (req, res) => {
     departure: new Date(req.body.departure),
     image: req.body.image,
 
-    // ✅ Perks
+    // Perks
     perks: req.body.perks || [],
 
     vendorEmail: req.decoded.email,
