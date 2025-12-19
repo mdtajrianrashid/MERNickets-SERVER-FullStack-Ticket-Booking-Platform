@@ -1,6 +1,6 @@
-# 🚀 (SERVER) - MERNickets — A Modern Online Ticket Booking Platform
+# 🚀 MERNickets (SERVER) — A Modern Online Ticket Booking Platform
 
-The **MERNickets Server** is the backend REST API for the **MERNickets – Modern Full‑Stack Online Ticket Booking Platform**. It is built using **Node.js, Express, MongoDB**, and **JWT**, and powers all core business logic including authentication, role-based access control, ticket management, bookings, payments, and analytics.
+The **MERNickets Server** is the backend REST API for the **MERNickets – A Modern Online Ticket Booking Platform**. It is built using **Node.js, Express, MongoDB**, and **JWT**, and powers all core business logic including authentication, role-based access control, ticket management, bookings, payments, and analytics.
 
 This server strictly follows the **B12‑A11 (Category‑17) Assignment Requirements** and is fully integrated with the MERNickets client application.
 
@@ -167,6 +167,24 @@ STRIPE_SECRET_KEY=YOUR_STRIPE_SECRET_KEY
 * Vendor-specific revenue aggregation
 * Tickets sold count
 * Tickets added count
+
+---
+
+## 📦 Dependencies
+
+```json
+{
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.0.1",
+    "morgan": "^1.10.1",
+    "stripe": "^20.0.0"
+}
+```
 
 ---
 
