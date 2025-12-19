@@ -89,7 +89,7 @@ The backend handles:
 ## 📁 Project Structure
 
 ```bash
-server/
+MERNickets-SERVER-FullStack-Ticket-Booking-Platform/
 │
 ├── index.js                # Server entry point
 ├── .env                    # Environment variables
