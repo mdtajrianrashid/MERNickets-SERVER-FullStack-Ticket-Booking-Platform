@@ -1,129 +1,220 @@
-# 🎟️ MERNickets - Modern Full Stack Online Ticket Booking Platform
+# 🚀 MERNickets Server — Backend API
 
-**MERNickets** is a premium, full-stack online ticket booking platform built with the MERN stack (MongoDB, Express, React, Node.js). It serves as a comprehensive travel hub where users can discover and book tickets for buses, trains, launches, and flights.
+The **MERNickets Server** is the backend REST API for the **MERNickets – Modern Full‑Stack Online Ticket Booking Platform**. It is built using **Node.js, Express, MongoDB**, and **JWT**, and powers all core business logic including authentication, role-based access control, ticket management, bookings, payments, and analytics.
 
-The platform features a sleek, glassmorphic UI with **Dark/Light mode**, advanced role-based dashboards (User, Vendor, Admin), real-time booking status updates, and secure payments via Stripe.
-
----
-
-## 🌐 Live Demo
-
-### 🔗 Client  
-**[https://mernickets.netlify.app/]**
-
-### 🔗 Server  
-**[https://mernickets-server.vercel.app/]**
+This server strictly follows the **B12‑A11 (Category‑17) Assignment Requirements** and is fully integrated with the MERNickets client application.
 
 ---
 
-## 🔑 Test Credentials
+## 🌐 Live API
 
-Use these credentials to explore the different role-based features:
-
-### 👮‍♂️ Admin Access
-> **Email:** `[admin@mernickets.com]`  
-> **Password:** `[Ab1234567890]`
-
-### 🏪 Vendor Access
-> **Email:** `[vendor@mernickets.com]`  
-> **Password:** `[Ab1234567890]`
-
-### 👤 User Access
-> **Email:** `[Login with Any Email/Gmail]`  
+**🔗 Server URL:**
+👉 [https://mernickets-server.vercel.app/](https://mernickets-server.vercel.app/)
 
 ---
 
-## ✨ Key Features
+## 🔗 Connected Client
 
-### 🌍 General Features
-**Modern UI/UX:** Built with **Tailwind CSS v4** and **Framer Motion** for smooth page transitions and glassmorphism effects[cite: 19].
-**Responsive Design:** Fully optimized layout for mobile, tablet, and desktop screens[cite: 33].
-**Theme Toggle:** Integrated Dark/Light mode toggle for better user experience[cite: 251].
-**Secure Authentication:** Firebase Email/Password login and Google Social Login[cite: 46].
+**Frontend Repository:**
+👉 [https://github.com/mdtajrianrashid/MERNickets-CLIENT-FullStack-Ticket-Booking-Platform](https://github.com/mdtajrianrashid/MERNickets-CLIENT-FullStack-Ticket-Booking-Platform)
 
-### 👤 User Features (Traveler)
-**Advanced Search & Filter:** Search tickets by Location (From/To) and filter by Transport Type (Bus, Train, Launch, Flight)[cite: 247].
-**Smart Sorting:** Sort tickets by Price (Low to High / High to Low)[cite: 248].
-* **Booking System:** Book tickets with a real-time quantity selector.
-**Secure Payments:** Integrated **Stripe** payment gateway for secure transactions[cite: 139].
-* **User Dashboard:**
-    **My Bookings:** View booking status (Pending, Accepted, Rejected) with a countdown timer for upcoming trips[cite: 128].
-    **Transaction History:** View detailed payment logs with transaction IDs[cite: 144].
+**Live Client:**
+👉 [https://mernickets.netlify.app/](https://mernickets.netlify.app/)
 
-### 🏪 Vendor Features (Service Provider)
-**Ticket Management:** Add, Update, and Delete ticket listings with image uploads[cite: 158, 179].
-**Booking Requests:** Accept or Reject incoming booking requests from users[cite: 182].
-**Revenue Analytics:** Interactive charts (Bar & Pie) displaying "Total Revenue", "Tickets Sold", and "Tickets Added" using **Recharts**[cite: 190].
-**Inventory Control:** Track ticket verification status (Pending, Approved, Rejected)[cite: 175].
+---
 
-### 🛡️ Admin Features (Platform Manager)
-**Ticket Moderation:** Approve or Reject tickets added by vendors before they go live[cite: 199].
-**User Management:** Manage user roles (Promote to Vendor/Admin) and mark fraudulent vendors[cite: 204].
-**Advertisement Control:** Toggle "Featured" status for tickets to display them on the Home page banner (Max 6)[cite: 210].
-**System Overview:** centralized control over the entire platform's content.
+## 🎯 Core Responsibilities
+
+The backend handles:
+
+* Secure **JWT-based authentication**
+* **Role-based authorization** (User, Vendor, Admin)
+* Ticket CRUD & approval workflow
+* Booking lifecycle management
+* Stripe payment processing
+* Revenue & analytics APIs
+* Advertisement control
+
+---
+
+## 🧑‍🤝‍🧑 Role-Based Access Control
+
+### 👤 User (Traveler)
+
+* View **admin-approved tickets only**
+* Search & filter tickets
+* Create bookings
+* Complete payments via Stripe
+* View booking status & transaction history
+
+### 🏪 Vendor (Service Provider)
+
+* Add / update / delete tickets
+* View tickets added by themselves
+* Accept or reject booking requests
+* View **Revenue Overview**:
+
+  * Total Revenue
+  * Tickets Sold
+  * Tickets Added
+
+### 🛡️ Admin (Platform Manager)
+
+* Approve / reject vendor tickets
+* Control ticket advertisements (max 6)
+* Manage user roles (Admin / Vendor)
+* Mark fraudulent vendors
 
 ---
 
 ## 🛠️ Tech Stack
 
-### **Frontend**
-* **React 19** (Vite)
-* **Tailwind CSS v4** (Styling)
-* **Framer Motion** (Animations)
-* **Recharts** (Data Visualization)
-* **Stripe.js** (Payments)
-
 ### **Backend**
-* **Node.js** (Runtime)
-* **Express.js** (Framework)
-* **MongoDB** (Database)
-* [cite_start]**JWT** (Secure API Protection) [cite: 249]
 
-### **Tools**
-* **Firebase** (Authentication)
-* [cite_start]**ImgBB** (Image Hosting) [cite: 167]
+* **Node.js** — JavaScript runtime
+* **Express.js** — REST API framework
+* **MongoDB** — NoSQL database
+* **Mongoose** — ODM for MongoDB
+* **JWT** — Secure API authorization
+* **Stripe** — Payment intent handling
+
+### **Security & Middleware**
+
+* CORS configuration
+* JWT verification middleware
+* Role-based route protection
 
 ---
 
-## 📦 Dependencies
+## 📁 Project Structure
 
-```json
-"dependencies": {
-    "@heroicons/react": "^2.2.0",
-    "@stripe/react-stripe-js": "^5.4.1",
-    "@stripe/stripe-js": "^8.5.3",
-    "@tailwindcss/vite": "^4.1.18",
-    "axios": "^1.13.2",
-    "firebase": "^12.6.0",
-    "framer-motion": "^12.23.26",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-hot-toast": "^2.6.0",
-    "react-icons": "^5.5.0",
-    "react-router-dom": "^7.10.1",
-    "recharts": "^3.6.0"
-}
-
-## 🏃 Running Locally
-
-Follow these steps to get a local copy up and running.
-
-### 1. Clone the repository
+```bash
+server/
+│
+├── index.js                # Server entry point
+├── .env                    # Environment variables
+│
+├── config/
+│   └── db.js               # MongoDB connection
+│
+├── models/
+│   ├── User.js             # User schema (roles)
+│   ├── Ticket.js           # Ticket schema
+│   └── Booking.js          # Booking & payment schema
+│
+├── routes/
+│   ├── authRoutes.js       # Auth & user management
+│   ├── ticketRoutes.js     # Ticket CRUD & approval
+│   ├── bookingRoutes.js    # Booking lifecycle
+│   └── paymentRoutes.js    # Stripe payment intents
+│
+├── controllers/
+│   ├── authController.js        # Login + Register logic
+│   ├── ticketController.js      # Ticket CRUD logic
+│   ├── bookingController.js     # Booking creation + updates
+│   └── paymentController.js     # Create payment intent with Stripe
+│
+└── middleware/
+    ├── verifyToken.js      # JWT verification
+    └── verifyRoles.js      # Role-based access control
 ```
-git clone [https://github.com/mdtajrianrashid/MERNickets-CLIENT-FullStack-Ticket-Booking-Platform.git]
-cd [MERNickets-CLIENT-FullStack-Ticket-Booking-Platform]
-npm install 
 
-Create a .env.local file in the root directory and add your keys:
+---
 
-VITE_apiKey=YOUR_FIREBASE_API_KEY
-VITE_authDomain=YOUR_FIREBASE_AUTH_DOMAIN
-VITE_projectId=YOUR_FIREBASE_PROJECT_ID
-VITE_storageBucket=YOUR_FIREBASE_STORAGE_BUCKET
-VITE_messagingSenderId=YOUR_FIREBASE_SENDER_ID
-VITE_appId=YOUR_FIREBASE_APP_ID
-VITE_stripe_publishable_key=YOUR_STRIPE_PK
-VITE_API_URL=http://localhost:5000
+## 🔐 Environment Variables
 
+Create a `.env` file in the **server root**:
+
+```env
+PORT=5000
+MONGODB_URI=YOUR_MONGODB_CONNECTION_STRING
+JWT_SECRET=YOUR_JWT_SECRET
+STRIPE_SECRET_KEY=YOUR_STRIPE_SECRET_KEY
+```
+
+> ⚠️ Never commit `.env` files to GitHub.
+
+---
+
+## 📡 API Highlights
+
+### 🔑 Authentication
+
+* JWT issued after Firebase-authenticated login
+* Token required for all protected routes
+
+### 🎟️ Tickets
+
+* Vendors can add tickets
+* Admin approval required before public visibility
+* Advertised tickets capped at **6 (enforced)**
+
+### 📦 Bookings
+
+* Users create bookings
+* Vendors approve/reject
+* Booking status tracked
+
+### 💳 Payments
+
+* Stripe Payment Intents
+* Payment verification
+* Transaction history storage
+
+### 📊 Revenue Analytics
+
+* Vendor-specific revenue aggregation
+* Tickets sold count
+* Tickets added count
+
+---
+
+## 🏃 Run Locally
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/mdtajrianrashid/MERNickets-SERVER-FullStack-Ticket-Booking-Platform.git
+cd MERNickets-SERVER-FullStack-Ticket-Booking-Platform
+npm install
+```
+
+### 2️⃣ Start the Server
+
+```bash
 npm run dev
 ```
+
+Server will run on:
+
+```
+http://localhost:5000
+```
+
+---
+
+## ☁️ Deployment
+
+* **Server Hosting:** Vercel
+* **Database:** MongoDB Atlas
+* **Client Hosting:** Netlify
+
+CORS is configured to allow the deployed Netlify client.
+
+---
+
+## 👨‍💻 Author
+
+**MD Tajrian Rashid**
+Frontend & Full‑Stack Developer
+
+🔗 GitHub: [https://github.com/mdtajrianrashid](https://github.com/mdtajrianrashid)
+🔗 LinkedIn: [https://www.linkedin.com/in/mdtajrianrashid/](https://www.linkedin.com/in/mdtajrianrashid/)
+
+---
+
+## ⭐ Final Note
+
+If you find this project helpful or inspiring, feel free to ⭐ the repository.
+
+**MERNickets — A Modern Online Ticket Booking Platform.**
