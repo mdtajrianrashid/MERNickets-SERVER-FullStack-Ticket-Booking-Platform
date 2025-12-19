@@ -2,9 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Ticket from "../models/Ticket.js";
 
-/* ================================
-   Register User (MongoDB)
-================================ */
+/* Register User (MongoDB)*/
 export const registerUser = async (req, res) => {
   const { name, email } = req.body;
 
@@ -20,9 +18,7 @@ export const registerUser = async (req, res) => {
   res.send(user);
 };
 
-/* ================================
-   Issue JWT
-================================ */
+/* Issue JWT */
 export const issueJWT = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
 
@@ -35,24 +31,18 @@ export const issueJWT = async (req, res) => {
   res.send({ token });
 };
 
-/* ================================
-   Get Current User
-================================ */
+/* Get Current User */
 export const getMe = async (req, res) => {
   const user = await User.findOne({ email: req.query.email });
   res.send(user);
 };
 
-/* ================================
-   ADMIN: Get All Users
-================================ */
+/* ADMIN: Get All Users */
 export const getAllUsers = async (req, res) => {
   res.send(await User.find());
 };
 
-/* ================================
-   ADMIN: Update User Role
-================================ */
+/* ADMIN: Update User Role */
 export const updateUserRole = async (req, res) => {
   const { role } = req.body;
 
@@ -65,9 +55,7 @@ export const updateUserRole = async (req, res) => {
   res.send(user);
 };
 
-/* ================================
-   ADMIN: Mark Vendor Fraud
-================================ */
+/* ADMIN: Mark Vendor Fraud */
 export const markVendorFraud = async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.params.id,

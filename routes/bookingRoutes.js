@@ -27,11 +27,7 @@ router.get("/", verifyToken, verifyUser, getUserBookings);
 router.patch("/confirm", verifyToken, verifyUser, confirmBookingPayment);
 router.get("/transactions", verifyToken, verifyUser, getTransactionHistory);
 
-/* ===============================
-   VENDOR ROUTES
-================================ */
-
-// ONLY pending booking requests
+// VENDOR ROUTES - ONLY pending booking requests
 router.get(
   "/vendor",
   verifyToken,
@@ -43,7 +39,7 @@ router.get(
 router.patch("/accept/:id", verifyToken, verifyVendor, acceptBooking);
 router.patch("/reject/:id", verifyToken, verifyVendor, rejectBooking);
 
-// ✅ Vendor revenue
+// Vendor revenue
 router.get(
   "/vendor/revenue",
   verifyToken,

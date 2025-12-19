@@ -1,9 +1,7 @@
 import Booking from "../models/Booking.js";
 import Ticket from "../models/Ticket.js";
 
-/* ================================
-   Create Booking (User)
-================================ */
+/* Create Booking (User) */
 export const createBooking = async (req, res) => {
   try {
     const { ticketId, quantity } = req.body;
@@ -44,7 +42,7 @@ export const createBooking = async (req, res) => {
       ticketId,
       ticketTitle: ticket.title,
       quantity,
-      totalPrice, // ✅ FIX
+      totalPrice,
       departure: ticket.departure,
       status: "pending",
     });
@@ -55,9 +53,7 @@ export const createBooking = async (req, res) => {
   }
 };
 
-/* ================================
-   Get User Bookings (User)
-================================ */
+/* Get User Bookings (User) */
 export const getUserBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({
@@ -79,9 +75,7 @@ export const getUserBookings = async (req, res) => {
   }
 };
 
-/* ================================
-   Vendor: Accept Booking
-================================ */
+/* Vendor: Accept Booking */
 export const acceptBooking = async (req, res) => {
   try {
     const { id } = req.params;
@@ -100,9 +94,7 @@ export const acceptBooking = async (req, res) => {
   }
 };
 
-/* ================================
-   Vendor: Reject Booking
-================================ */
+/* Vendor: Reject Booking */
 export const rejectBooking = async (req, res) => {
   try {
     const { id } = req.params;
@@ -121,9 +113,7 @@ export const rejectBooking = async (req, res) => {
   }
 };
 
-/* ================================
-   Vendor: Requested Bookings
-================================ */
+/* Vendor: Requested Bookings */
 export const getVendorRequestedBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({ status: "pending" })
@@ -139,9 +129,7 @@ export const getVendorRequestedBookings = async (req, res) => {
   }
 };
 
-/* ================================
-   Vendor: Revenue Overview
-================================ */
+/* Vendor: Revenue Overview */
 export const getVendorRevenue = async (req, res) => {
   try {
     const bookings = await Booking.find({ status: "paid" })
@@ -161,16 +149,12 @@ export const getVendorRevenue = async (req, res) => {
       0
     );
 
-    /* ==========================
-       2️⃣ TICKETS ADDED (From Ticket Collection)
-    =========================== */
+    /* TICKETS ADDED (From Ticket Collection) */
     const ticketsAdded = await Ticket.countDocuments({
       vendorEmail: req.decoded.email,
     });
 
-    /* ==========================
-       3️⃣ SEND FINAL RESPONSE
-    =========================== */
+    /* SEND FINAL RESPONSE */
     res.send({
       revenue,
       ticketsSold,
@@ -182,9 +166,7 @@ export const getVendorRevenue = async (req, res) => {
   }
 };
 
-/* ================================
-   Confirm Payment (Stripe)
-================================ */
+/* Confirm Payment (Stripe) */
 export const confirmBookingPayment = async (req, res) => {
   try {
     const { bookingId, transactionId } = req.body;
@@ -237,9 +219,7 @@ export const confirmBookingPayment = async (req, res) => {
   }
 };
 
-/* ================================
-   Transaction History (User)
-================================ */
+/* Transaction History (User) */
 export const getTransactionHistory = async (req, res) => {
   try {
     const transactions = await Booking.find({

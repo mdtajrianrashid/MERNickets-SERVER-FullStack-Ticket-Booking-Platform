@@ -1,7 +1,7 @@
 import Ticket from "../models/Ticket.js";
 import User from "../models/User.js";
 
-/* ---------- CREATE ---------- */
+/* CREATE */
 export const createTicket = async (req, res) => {
   const vendor = await User.findOne({ email: req.decoded.email });
   if (vendor.isFraud) {
@@ -17,10 +17,7 @@ export const createTicket = async (req, res) => {
     ticketQuantity: Number(req.body.ticketQuantity),
     departure: new Date(req.body.departure),
     image: req.body.image,
-
-    // Perks
     perks: req.body.perks || [],
-
     vendorEmail: req.decoded.email,
     vendorFraud: vendor.isFraud,
   });
@@ -28,7 +25,7 @@ export const createTicket = async (req, res) => {
   res.send(ticket);
 };
 
-/* ---------- DELETE ---------- */
+/* DELETE  */
 export const deleteTicket = async (req, res) => {
   const ticket = await Ticket.findOneAndDelete({
     _id: req.params.id,
@@ -42,7 +39,7 @@ export const deleteTicket = async (req, res) => {
   res.send({ message: "Ticket deleted successfully" });
 };
 
-/* ---------- PUBLIC ---------- */
+/* PUBLIC */
 export const getApprovedTickets = async (req, res) => {
   const tickets = await Ticket.find({
     status: "approved",
@@ -51,7 +48,7 @@ export const getApprovedTickets = async (req, res) => {
   res.send(tickets);
 };
 
-/* ---------- ADMIN ---------- */
+/* ADMIN */
 export const getAllTicketsAdmin = async (req, res) => {
   const tickets = await Ticket.find();
   res.send(tickets);
@@ -91,7 +88,7 @@ export const toggleAdvertise = async (req, res) => {
   res.send(ticket);
 };
 
-/* ---------- VENDOR ---------- */
+/* VENDOR */
 export const getVendorTickets = async (req, res) => {
   const tickets = await Ticket.find({ vendorEmail: req.decoded.email });
   res.send(tickets);
@@ -121,7 +118,7 @@ export const updateTicket = async (req, res) => {
   res.send(ticket);
 };
 
-/* ---------- VENDOR: SINGLE ---------- */
+/* VENDOR: SINGLE */
 export const getSingleVendorTicket = async (req, res) => {
   const ticket = await Ticket.findOne({
     _id: req.params.id,

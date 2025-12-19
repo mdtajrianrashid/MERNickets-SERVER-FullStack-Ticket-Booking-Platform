@@ -13,7 +13,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://mernickets.netlify.app/"
+    "https://mernickets.netlify.app"
   ],
   credentials: true
 }));
