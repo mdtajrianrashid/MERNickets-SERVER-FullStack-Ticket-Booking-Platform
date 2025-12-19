@@ -13,7 +13,8 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://mernickets.netlify.app"
+    "https://mernickets.netlify.app",
+    "https://ornate-bunny-7100a5.netlify.app"
   ],
   credentials: true
 }));
